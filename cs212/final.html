@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Lights Out</title>
   <style>
@@ -10,14 +11,16 @@
       align-items: center;
       height: 100vh;
       margin: 0;
-      background: linear-gradient(45deg, #FFDAB9, #FFA500); /* Gradient from Peach to Orange */
+      background: linear-gradient(45deg, #FFDAB9, #FFA07A); /* Gradient from Peach to Light Salmon */
       flex-direction: column;
       color: #8B0000; /* Dark Red */
       font-family: Arial, sans-serif;
     }
+
     h1 {
       margin-bottom: 20px;
     }
+
     .container {
       display: grid;
       grid-template-columns: repeat(5, 50px);
@@ -26,6 +29,7 @@
       align-items: center;
       margin-bottom: 20px;
     }
+
     .cell {
       width: 50px;
       height: 50px;
@@ -33,12 +37,15 @@
       border: 1px solid white;
       cursor: pointer;
     }
+
     .cell.active {
       background-color: white;
     }
+
     .restart-btn {
       text-align: center;
     }
+
     .restart-btn button {
       padding: 10px 20px;
       background-color: #FFDAB9; /* Peach Radiant color */
@@ -47,112 +54,114 @@
       cursor: pointer;
       font-weight: bold;
     }
+
     .restart-btn button:hover {
       background-color: #8B0000; /* Dark Red */
       color: white;
     }
+
     /* Addendum styles */
     .addendum {
       margin-top: 30px;
       border-top: 1px solid #8B0000; /* Dark Red */
       padding-top: 20px;
     }
+
     .addendum h2 {
       margin-bottom: 10px;
     }
+
     .addendum p {
       margin-bottom: 15px;
     }
   </style>
 </head>
+
 <body>
 
-<h1>Lights Out</h1>
+  <h1>Lights Out</h1>
 
-<div class="container" id="board"></div>
-<div class="restart-btn">
-  <button onclick="restartGame()">Reset</button>
-</div>
+  <div class="container" id="board"></div>
+  <div class="restart-btn">
+    <button onclick="restartGame()">Reset</button>
+  </div>
 
-<script>
-  const boardSize = 5;
-  let board = [];
+  <script>
+    const boardSize = 5;
+    let board = [];
 
-  // Create a random solvable board
-  function createBoard() {
-    board = [];
-    for (let i = 0; i < boardSize; i++) {
-      board[i] = [];
-      for (let j = 0; j < boardSize; j++) {
-        board[i][j] = Math.random() > 0.5 ? 1 : 0;
+    // Create a random solvable board
+    function createBoard() {
+      board = [];
+      for (let i = 0; i < boardSize; i++) {
+        board[i] = [];
+        for (let j = 0; j < boardSize; j++) {
+          board[i][j] = Math.random() > 0.5 ? 1 : 0;
+        }
       }
     }
-  }
 
-  // Check if the board is solved
-  function isSolved() {
-    return board.every(row => row.every(cell => cell === 0));
-  }
+    // Check if the board is solved
+    function isSolved() {
+      return board.every(row => row.every(cell => cell === 0));
+    }
 
-  // Toggle the lights when a cell is clicked
-  function toggleCell(row, col) {
-    board[row][col] ^= 1;
-    if (row > 0) board[row - 1][col] ^= 1;
-    if (row < boardSize - 1) board[row + 1][col] ^= 1;
-    if (col > 0) board[row][col - 1] ^= 1;
-    if (col < boardSize - 1) board[row][col + 1] ^= 1;
-  }
+    // Toggle the lights when a cell is clicked
+    function toggleCell(row, col) {
+      board[row][col] ^= 1;
+      if (row > 0) board[row - 1][col] ^= 1;
+      if (row < boardSize - 1) board[row + 1][col] ^= 1;
+      if (col > 0) board[row][col - 1] ^= 1;
+      if (col < boardSize - 1) board[row][col + 1] ^= 1;
+    }
 
-  // Render the board
-  function renderBoard() {
-    const boardElement = document.getElementById('board');
-    boardElement.innerHTML = '';
-    for (let i = 0; i < boardSize; i++) {
-      for (let j = 0; j < boardSize; j++) {
-        const cell = document.createElement('div');
-        cell.className = 'cell';
-        if (board[i][j] === 1) cell.classList.add('active');
-        cell.addEventListener('click', () => {
-          toggleCell(i, j);
-          renderBoard();
-          if (isSolved()) {
-            window.alert('You win!');
-            createBoard();
+    // Render the board
+    function renderBoard() {
+      const boardElement = document.getElementById('board');
+      boardElement.innerHTML = '';
+      for (let i = 0; i < boardSize; i++) {
+        for (let j = 0; j < boardSize; j++) {
+          const cell = document.createElement('div');
+          cell.className = 'cell';
+          if (board[i][j] === 1) cell.classList.add('active');
+          cell.addEventListener('click', () => {
+            toggleCell(i, j);
             renderBoard();
-          }
-        });
-        boardElement.appendChild(cell);
+            if (isSolved()) {
+              window.alert('You win!');
+              createBoard();
+              renderBoard();
+            }
+          });
+          boardElement.appendChild(cell);
+        }
       }
     }
-  }
 
-  // Initialize the game
-  createBoard();
-  renderBoard();
-
-  // Restart the game
-  function restartGame() {
+    // Initialize the game
     createBoard();
     renderBoard();
-  }
-</script>
 
-<!-- Addendum explaining the code -->
-<div class="addendum">
-  <h2>Explanation:</h2>
-  <p>
-    "Lights Out" is the game that is created with the specified code. Clicking on each cell to turn it off is the goal. Clicking on a cell flips it along with its neighboring cells. Until every cell is turned off, the game goes on.
-  </p>
-  <p>
-    The appearance, color scheme, and arrangement of the game elements are specified by the CSS styles. A grid of cells is used to symbolize the game board. A cell's color can be toggled by clicking on it, and the restart button restarts the game by creating a randomly chosen new board.
-  </p>
-  <p>
-    The logic of the game is controlled by JavaScript functions, which also generate a randomly solvable board, determine whether the game has been solved, toggle cells, render the board, and resume the game.
-  </p>   
-  <p>
-    All things considered, the interactivity of the Lights Out game with its tidy and eye-catching design is made possible by the combination of HTML, CSS, and JavaScript.
-  </p>
-</div>
+    // Restart the game
+    function restartGame() {
+      createBoard();
+      renderBoard();
+    }
+  </script>
+
+  <!-- Addendum explaining the code -->
+  <div class="addendum">
+    <h2>Explanation:</h2>
+    <p>
+      "Lights Out" is the game that is created with the specified code. Clicking on each cell to turn it off is the goal. Clicking on a cell flips it along with its neighboring cells. Until every cell is turned off, the game goes on. </p>
+    <p>
+      The appearance, color scheme, and arrangement of the game elements are specified by the CSS styles. A grid of cells is used to symbolize the game board. A cell's color can be toggled by clicking on it, and the restart button restarts the game by creating a randomly chosen new board. </p>
+    <p>
+      The logic of the game is controlled by JavaScript functions, which also generate a randomly solvable board, determine whether the game has been solved, toggle cells, render the board, and resume the game.
+    <p>
+      All things considered, the interactivity of the Lights Out game with its tidy and eye-catching design is made possible by the combination of HTML, CSS, and JavaScript.
+  </div>
 
 </body>
+
 </html>
